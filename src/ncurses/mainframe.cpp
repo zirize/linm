@@ -565,7 +565,7 @@ void MainFrame::Execute(KeyInfo &tKeyInfo) {
 
     if (_bShell) curs_set(1);
 
-#ifdef __DEBUGMODE__
+#if __DEBUGMODE__
     if (nRt == ERROR) {
         String sMsg(_("configure command not found.."));
         sMsg.Append(_("[%s]"), sCmd.c_str());
