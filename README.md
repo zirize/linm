@@ -16,7 +16,7 @@ It inherits the keyboard shortcuts and screen layout from Mdir for a familiar ex
 - Multi-panel view
 
 Original project: https://github.com/la9527/linm  
-Bug reports / contact: la9527@daum.net
+Bug reports / contact: zirize@gmail.com (fork) / la9527@daum.net (original)
 
 ---
 

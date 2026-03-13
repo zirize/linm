@@ -8,7 +8,7 @@ MS-DOS 시절 유명했던 Mdir의 리눅스 클론으로, Mdir의 단축키와 
 파일 복사/이동/삭제, 디렉토리 트리 탐색, 파일 검색, 서브쉘 실행을 비롯해 FTP/SFTP, tar/zip/alz 아카이브 보기, RPM/DEB 패키지 탐색 등 다양한 기능을 제공합니다.
 
 - 오리지널 프로젝트: https://github.com/la9527/linm
-- 버그 리포트 및 문의: la9527@daum.net
+- 버그 리포트 및 문의: zirize@gmail.com (fork) / la9527@daum.net (original)
 
 ---
 
