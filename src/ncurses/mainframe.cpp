@@ -56,7 +56,7 @@ void TitleChange(const string &sPath, bool bHostNameShow) {
         if (pw)
             sLogin = pw->pw_name;
     } else
-        sprintf(cHostName, "localhost");
+        snprintf(cHostName, sizeof(cHostName), "localhost");
 
     if (strlen(cHostName) == 0 || sLogin.size() == 0 || !bHostNameShow) {
         printf("%c]0;LinM %s - %s%c", '\033', VERSION, sStr.c_str(), '\007');

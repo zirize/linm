@@ -1,3 +1,15 @@
+2026-03-15 Bill,Kang <zirize@gmail.com>
+	- 보안 업데이트: sprintf → snprintf (mainframe.cpp, SMBReader.cpp),
+	  strcpy → memcpy (mlslocale.cpp), system() 호출 경로 인수 shell 인용부호 처리.
+	- touch 파일 생성 명령을 system("touch ...") 대신 open() syscall로 교체하여
+	  shell injection 방지.
+	- ShellQuotePath() 헬퍼 추가: system() 명령에 사용되는 경로를 single quote로
+	  감싸 특수문자가 포함된 경로에서도 안전하게 동작.
+	- Alt+F 필터를 정규표현식(regex) 기반으로 변경: 대소문자 구분 없는 regex 검색,
+	  잘못된 regex 패턴일 경우 substring 검색으로 자동 폴백.
+	- 필터 표시줄에 regex 유효 여부 표시: [F/RE:...] (유효한 regex),
+	  [F/?:...] (무효한 regex - substring 검색 중).
+
 2026-03-14 Bill,Kang <zirize@gmail.com>
 	- Alt+F로 파일 이름 필터 기능 추가 (실시간 파일 목록 필터링, 디렉토리 제외).
 	- 필터 상태가 디렉토리 이동 시에도 유지되도록 개선.

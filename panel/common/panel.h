@@ -104,9 +104,10 @@ public:
 	bool	_bSearch;	///< 검색 여부
 	int		_nSort;		///< 현재 소트 위치
 
-	bool	_bFilterMode;	///< 필터 모드 활성 여부
-	string	_sFilterStr;	///< 현재 필터 문자열
-	vector<File*> _vFilterFiles;  ///< 필터된 파일 목록
+	bool	_bFilterMode;		///< 필터 모드 활성 여부
+	string	_sFilterStr;		///< 현재 필터 문자열
+	vector<File*> _vFilterFiles;	///< 필터된 파일 목록
+	bool	_bFilterRegexValid;	///< 현재 필터 패턴이 유효한 regex인지 여부
 
 	bool	_bDirSortAscend;///< 디렉토리 정렬 순서
 	bool	_bFileSortAscend;///<파일 정렬 순서
@@ -252,6 +253,7 @@ public:
 	void	FilterExit();
 	void	ApplyFilter();
 	bool	IsFilterMode() const { return _bFilterMode; }
+	bool	IsFilterRegexValid() const { return _bFilterRegexValid; }
 	const string& GetFilterStr() const { return _sFilterStr; }
 	bool	SearchExactFile(const string & fileName, uint & fileIndex, bool bFullName = false) const;
 	bool	SearchMatchingFile(const string &str, uint & d_index, int s_index = 0);

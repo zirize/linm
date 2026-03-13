@@ -11,9 +11,21 @@
 #include "mainframe_view.h"
 #include "subshell.h"
 #include <fcntl.h>
+#include <sys/stat.h>
 
 using namespace MLS;
 using namespace MLSUTIL;
+
+/// @brief Wrap a filesystem path in single quotes for safe use in shell commands.
+static string ShellQuotePath(const string& path) {
+    string result = "'";
+    for (char c : path) {
+        if (c == '\'') result += "'\\''";
+        else result += c;
+    }
+    result += "'";
+    return result;
+}
 
 void CmdPanelImp::UpdateConfig()
 {
@@ -900,7 +912,7 @@ void	CmdPanelImp::CopyPaste()
 
 		if (g_tCfg.GetValue("Static", "TmpCopyDir") != "")
 		{
-			string sTmpDel = "rm -rf " + g_tCfg.GetValue("Static", "TmpCopyDir") + "*";
+			string sTmpDel = "rm -rf " + ShellQuotePath(g_tCfg.GetValue("Static", "TmpCopyDir")) + "*";
 			system( sTmpDel.c_str() );
 		}
 
@@ -1006,7 +1018,7 @@ void 	CmdPanelImp::CutPaste()
 
 		if (g_tCfg.GetValue("Static", "TmpCopyDir") != "")
 		{
-			string sTmpDel = "rm -rf " + g_tCfg.GetValue("Static", "TmpCopyDir") + "*";
+			string sTmpDel = "rm -rf " + ShellQuotePath(g_tCfg.GetValue("Static", "TmpCopyDir")) + "*";
 			system( sTmpDel.c_str() );
 		}
 
@@ -1389,8 +1401,15 @@ void	CmdPanelImp::TouchFile()
 	else
 		sFilename = g_tCfg.GetValue("Static", "TmpDir") + sFilename;
 
-	sFilename = "touch " + sFilename;
-	system( sFilename.c_str() );
+	// Use creat() syscall instead of system("touch ...") to avoid shell injection
+	int fd = open(sFilename.c_str(), O_CREAT | O_WRONLY | O_NOCTTY, 0644);
+	if (fd >= 0) {
+		close(fd);
+	} else {
+		// fallback for non-local paths (e.g. TmpDir on VFS)
+		string sCmd = "touch " + ShellQuotePath(sFilename);
+		system( sCmd.c_str() );
+	}
 	Refresh();
 }
 

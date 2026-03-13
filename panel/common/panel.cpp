@@ -24,6 +24,7 @@
 #include "cmdshell.h"
 #include "mlslocale.h"
 #include "mlsdialog.h"
+#include <regex>
 
 using namespace MLSUTIL;
 using namespace MLS;
@@ -853,14 +854,34 @@ void Panel::ApplyFilter()
 	if (_sFilterStr.empty())
 	{
 		_vFilterFiles = _vDirFiles;
+		_bFilterRegexValid = true;
 	}
 	else
 	{
-		string sLower = Tolower(_sFilterStr);
+		// Try to compile the filter string as a case-insensitive regex
+		bool bRegexOk = true;
+		std::regex re;
+		try {
+			re = std::regex(_sFilterStr, std::regex::icase | std::regex::optimize);
+		} catch (std::regex_error&) {
+			bRegexOk = false;
+		}
+		_bFilterRegexValid = bRegexOk;
+
+		string sLower = Tolower(_sFilterStr); // fallback for invalid regex
 		for (int i = 0; i < (int)_vDirFiles.size(); i++)
 		{
 			File* pFile = _vDirFiles[i];
-			if (pFile->bDir || Tolower(pFile->sName).find(sLower) != string::npos)
+			bool bMatch = false;
+			if (pFile->bDir) {
+				bMatch = true;
+			} else if (bRegexOk) {
+				bMatch = std::regex_search(pFile->sName, re);
+			} else {
+				// Invalid regex: fall back to case-insensitive substring match
+				bMatch = Tolower(pFile->sName).find(sLower) != string::npos;
+			}
+			if (bMatch)
 				_vFilterFiles.push_back(pFile);
 		}
 	}
@@ -912,6 +933,7 @@ void Panel::FilterExit()
 	_bFilterMode = false;
 	_sFilterStr.clear();
 	_vFilterFiles.clear();
+	_bFilterRegexValid = true;
 	_bChange = true;
 	// Ensure cursor is valid in full list
 	if (_uCur >= _vDirFiles.size() && !_vDirFiles.empty())

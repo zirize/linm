@@ -350,7 +350,10 @@ void	NCurses_Panel::LineDraw()
 	// Find Section.
 	setcol(g_tColorCfg._DefaultColor);
 	if (_bFilterMode)
-		mvwprintw(_pWin, 0, width-24, "[F:%-20s]", _sFilterStr.c_str());
+	{
+		const char* prefix = _bFilterRegexValid ? "[F/RE:%-17s]" : "[F/?:%-18s]";
+		mvwprintw(_pWin, 0, width-24, prefix, _sFilterStr.c_str());
+	}
 	else if (!_sStrSearch.empty())
 		mvwprintw(_pWin, 0, width-22, "[%-20s]", _sStrSearch.c_str());
 	//mvwprintw(_pWin, 0, 0, "[%d %d %d %d %d]", _uCur, _nPage, _nBefPage, _nCol, _nRow);

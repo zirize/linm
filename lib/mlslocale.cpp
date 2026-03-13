@@ -134,10 +134,11 @@ namespace MLSUTIL
 		if (strcmp (to_codeset, from_codeset) == 0)
 		{
 			char *p;
-			p = (char*)malloc (sizeof(char) * (strlen (str) + 1));
+			size_t slen = strlen(str) + 1;
+			p = (char*)malloc (sizeof(char) * slen);
 			if (!p)
 				return NULL;
-				strcpy (p, str);
+			memcpy (p, str, slen);
 			return p;
 		}
 	
@@ -147,9 +148,8 @@ namespace MLSUTIL
 			return NULL;
 	
 		p = (char*)malloc (sizeof(char) * (strlen (str) + 1));
-		strcpy (p, str);
-	
 		if (p == NULL) return NULL;
+		memcpy (p, str, strlen (str) + 1);
 	
 		len = strlen (p);
 		startp = p;

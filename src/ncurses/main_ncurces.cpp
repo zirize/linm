@@ -39,6 +39,17 @@
 using namespace MLSUTIL;
 using namespace MLS;
 
+/// @brief Wrap a filesystem path in single quotes for safe use in shell commands.
+static string ShellQuotePath(const string& path) {
+    string result = "'";
+    for (char c : path) {
+        if (c == '\'') result += "'\\''";
+        else result += c;
+    }
+    result += "'";
+    return result;
+}
+
 namespace { // first default setting
 
 bool		_bMcdExe  = false;	    ///< Is execute MCD
@@ -139,7 +150,7 @@ bool Initialize()
 #endif
 				if (cfgfile == sCfgDefaultPath)
 				{
-					string sCmd = "cp " + sCfgDefaultPath + " " + g_tCfg.GetValue("Static", "Home") + ".config/linm/";
+					string sCmd = "cp " + ShellQuotePath(sCfgDefaultPath) + " " + ShellQuotePath(g_tCfg.GetValue("Static", "Home") + ".config/linm/");
 					system(sCmd.c_str());
 				}
 				break;
@@ -182,7 +193,7 @@ bool Initialize()
 #endif
 				if (colfile == sCfgColorPath)
 				{
-					string sCmd = "cp " + sCfgColorPath + " " + g_tCfg.GetValue("Static", "Home") + ".config/linm/";
+					string sCmd = "cp " + ShellQuotePath(sCfgColorPath) + " " + ShellQuotePath(g_tCfg.GetValue("Static", "Home") + ".config/linm/");
 					system(sCmd.c_str());
 				}
 				break;
@@ -239,7 +250,7 @@ bool	Load_KeyFile()
 #endif
 				if (keyfile == sKeyCfgPath)
 				{
-					string sCmd = "cp " + sKeyCfgPath + " " + g_tCfg.GetValue("Static", "Home") + ".config/linm/";
+					string sCmd = "cp " + ShellQuotePath(sKeyCfgPath) + " " + ShellQuotePath(g_tCfg.GetValue("Static", "Home") + ".config/linm/");
 					system(sCmd.c_str());
 				}
 				break;
@@ -284,7 +295,7 @@ bool	Load_KeyFile()
 #endif
 				if (syntexFile == sCfgSyntaxExtPath)
 				{
-					string sCmd = "cp " + sCfgSyntaxExtPath + " " + g_tCfg.GetValue("Static", "Home") + ".config/linm/";
+					string sCmd = "cp " + ShellQuotePath(sCfgSyntaxExtPath) + " " + ShellQuotePath(g_tCfg.GetValue("Static", "Home") + ".config/linm/");
 					system(sCmd.c_str());
 				}
 				break;

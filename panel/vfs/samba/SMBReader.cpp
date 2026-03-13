@@ -65,7 +65,7 @@ static void	AuthDataFn(	const char * pServer,
 		return;
 	}
 
-	sprintf( pWorkgroup, "%s", sWorkGroup.c_str() );
+	snprintf( pWorkgroup, (size_t)maxLenWorkgroup, "%s", sWorkGroup.c_str() );
 
 	sMsg.clear();
 	sMsg.Append(_("Samba Connect Input Username - [%s - %s] [%s]"), pServer, pShare, pWorkgroup);
@@ -76,7 +76,7 @@ static void	AuthDataFn(	const char * pServer,
 		return;
 	}
 
-	sprintf( pUsername, "%s", sUser.c_str() );
+	snprintf( pUsername, (size_t)maxLenUsername, "%s", sUser.c_str() );
 
 	sMsg.clear();
 	sMsg.Append(_("Samba Connect Input Passwd - [%s - %s] [%s %s] "), 
@@ -87,7 +87,7 @@ static void	AuthDataFn(	const char * pServer,
 		return;
 	}
 	
-	sprintf( pPassword, "%s", sPasswd.c_str() );
+	snprintf( pPassword, (size_t)maxLenPassword, "%s", sPasswd.c_str() );
 }
 
 SMBReader::SMBReader()
