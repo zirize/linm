@@ -1,4 +1,4 @@
-setenv MLS_PWD_FILE $HOME/.linm/path
+setenv MLS_PWD_FILE $HOME/.config/linm/path
 
 @bindir@/linm $@
 

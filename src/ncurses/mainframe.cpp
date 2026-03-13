@@ -119,7 +119,8 @@ void MainFrame::Init() {
             exit(1);
     if (!_tPanel[1].Read(_sLastPath))
         if (!_tPanel[1].Read("~"))
-            exit(1);
+            if (!_tPanel[1].Read("."))
+                exit(1);
 
     _tMcd[0]._bFocus = _tPanel[0]._bFocus = _nActive ? false : true;
     _tMcd[1]._bFocus = _tPanel[1]._bFocus = _nActive ? true : false;
@@ -132,8 +133,10 @@ void MainFrame::Init() {
         _eViewType[1] = PANEL;
         _tMcd[0]._bFocus = true;
         _tPanel[1]._bFocus = true;
-        _tMcd[0].AddDirectory(_tPanel[1].GetReader()->GetPath());
-        _tMcd[0].SetCur(_tPanel[1].GetReader()->GetPath());
+        if (_tPanel[1].GetReader()) {
+            _tMcd[0].AddDirectory(_tPanel[1].GetReader()->GetPath());
+            _tMcd[0].SetCur(_tPanel[1].GetReader()->GetPath());
+        }
     }
     _tCommand.SetPanel(&_tPanel[_nActive]);
     _tCommand.SetMcd(&_tMcd[_nActive]);
@@ -501,6 +504,14 @@ void MainFrame::Execute(KeyInfo &tKeyInfo) {
                 bSearch = false;
     }
 
+    // Filter mode: consume key in FilterProcess first (suppresses incremental search)
+    if (_eViewType[_nActive] == PANEL && _tPanel[_nActive].IsFilterMode()) {
+        if (_tPanel[_nActive].FilterProcess(tKeyInfo)) {
+            _tPanel[_nActive]._bChange = true;
+            return;
+        }
+    }
+
     if (bSearch) {
         switch (_eViewType[_nActive]) {
             case PANEL:
@@ -684,8 +695,8 @@ void MainFrame::Split() {
 
     if (_tEditor[_nActive]._bFocus) {
         if (_bSplit) {
-            MouseInit();
-            _tEditor[_nActive]._bMouseMode = true;
+            if (!g_bNoMouse) MouseInit();
+            _tEditor[_nActive]._bMouseMode = !g_bNoMouse;
         } else {
             MouseDestroy();
             _tEditor[_nActive]._bMouseMode = false;

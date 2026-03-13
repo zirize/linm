@@ -149,6 +149,9 @@ namespace MLS {
 
         void SortColor();
 
+        // filter
+        void FilterMode();
+
         void ColumnAuto();
 
         void Column1();

@@ -121,8 +121,8 @@ void CmdEditorImp::Quit()
 {
 	if ( _pEditor->_bFullScreen )
 	{
-		MouseInit();
-		_pEditor->_bMouseMode = true;
+		if (!g_bNoMouse) MouseInit();
+		_pEditor->_bMouseMode = !g_bNoMouse;
 	}
 
 	if (_pEditor->Quit() == true)
@@ -316,7 +316,7 @@ void	CmdEditorImp::MouseUse()
 	{
 		_pEditor->_bMouseMode = !_pEditor->_bMouseMode;
 	
-		if ( _pEditor->_bMouseMode )
+		if ( _pEditor->_bMouseMode && !g_bNoMouse )
 			MouseInit();
 		else
 			MouseDestroy();

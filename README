@@ -48,8 +48,7 @@
    1) default.cfg, coloset.cfg, keyset.cfg
       
       Linm configuration files. 
-      Under /etc/linm if installed by root; otherwise, under $HOME/.linm.
-         
+      Under /etc/linm if installed by root; otherwise, under $HOME/.config/linm.         
    2) linm.sh, linm_aliase.sh   	
           
       LinM executable and shell scripts to move 

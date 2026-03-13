@@ -62,7 +62,12 @@ namespace MLSUTIL {
 
         bool Save(const string &sFile = "");
 
+        // Merge keys from sFile that do not already exist in this config.
+        // Existing user settings are never overwritten.
+        void MergeFromFile(const string &sFile);
+
         const string &getVersion() const { return _sVersion; }
+        void setVersion(const string &sVersion) { _sVersion = sVersion; }
 
         void SetValue(const string &section,
                       const string &var,

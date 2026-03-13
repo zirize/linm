@@ -116,7 +116,7 @@ bool	KeyCfgLoad::Parsing(const string& sSection, const string& sVar, const strin
 		tType.sValue = sVar;
 
 		// gettext style reading.
-		_mapKeyHelp[ &tType ] = getbetween(sVal, '\"', '\"');
+		_mapKeyHelp.push_back({ &tType, getbetween(sVal, '\"', '\"') });
 	}
 	return false;
 }
@@ -209,12 +209,11 @@ string	KeyCfgLoad::GetCommand( const KeyInfo& tKeyInfo, const ViewType eType )
 
 string	KeyCfgLoad::GetHelp(const TypeInfo& tType)
 {
-	map<TypeInfo*, string>::iterator i;
+	vector<pair<TypeInfo*, string>>::iterator i;
 	string 		sTmpCmd;
 
 	for (i = _mapKeyHelp.begin(); i != _mapKeyHelp.end(); ++i)
 	{
-		//LOG("GetCommand [%s] [%s] [%s] ", i->second.c_str(), i->first.c_str(), sKeyName.c_str());
 		if (tType == *(i->first))
 			return i->second;
 		if ( i->first->sValue == tType.sValue && i->first->eType == COMMON )
@@ -231,10 +230,9 @@ string	KeyCfgLoad::GetHelp_Key(const string& sKeyName, const ViewType eType)
 	TypeInfo	tTypeInfo(sCmd, eType);
 	string 		sTmpCmd;
 
-	map<TypeInfo*, string>::iterator i;
+	vector<pair<TypeInfo*, string>>::iterator i;
 	for (i = _mapKeyHelp.begin(); i != _mapKeyHelp.end(); ++i)
 	{
-		//LOG("GetCommand [%s] [%s] [%s] ", i->second.c_str(), i->first.c_str(), sKeyName.c_str());
 		if (tTypeInfo == *(i->first))
 			return i->second;
 		if ( i->first->sValue == sCmd && i->first->eType == COMMON )
@@ -249,42 +247,10 @@ string	KeyCfgLoad::GetHelp(const string& sCmd, const ViewType eType)
 	TypeInfo	tTypeInfo(sCmd, eType);
 	string 		sTmpCmd;
 
-	map<TypeInfo*, string>::iterator i;
+	vector<pair<TypeInfo*, string>>::iterator i;
 
-	/*
-	if ( sCmd.substr(0, 4) == "Cmd_" && e_nCurLang != US )
-	{
-		// convert to locale help message.
-		string sLang;	
-		if ( getenv("LANG") )
-			sLang = getenv("LANG");
-		
-		StringToken		tToken(sLang, " .");
-		tToken.Next();
-		sLang = tToken.Get();
-
-		tTypeInfo.sValue = sLang + sCmd.substr(3);
-
-		for (i = _mapKeyHelp.begin(); i != _mapKeyHelp.end(); ++i)
-		{
-			//LOG("GetCommand [%s] [%s] [%s] ", i->second.c_str(), i->first.c_str(), sKeyName.c_str());
-			if (tTypeInfo == *(i->first))
-				return ChgCurLocale(i->second);
-			
-			if ( i->first->sValue == tTypeInfo.sValue && i->first->eType == COMMON )
-			{
-				sTmpCmd = i->second;
-			}
-		}
-		
-		if (sTmpCmd.size() > 0 ) return ChgCurLocale(sTmpCmd);
-		tTypeInfo.sValue = sCmd;
-	}
-	*/
-	
 	for (i = _mapKeyHelp.begin(); i != _mapKeyHelp.end(); ++i)
 	{
-		//LOG("GetCommand [%s] [%s] [%s] ", i->second.c_str(), i->first.c_str(), sKeyName.c_str());
 		if (tTypeInfo == *(i->first))
 			return i->second;
 		if ( i->first->sValue == sCmd && i->first->eType == COMMON )
@@ -297,7 +263,7 @@ string	KeyCfgLoad::GetHelp(const string& sCmd, const ViewType eType)
 
 string	KeyCfgLoad::GetHelp(const KeyInfo& tKeyInfo, const ViewType eType)
 {
-	map<TypeInfo*, string>::iterator i;
+	vector<pair<TypeInfo*, string>>::iterator i;
 	string		sKeyName, sTmpHelp;
 	bool		bFind = false;
 
@@ -319,7 +285,6 @@ string	KeyCfgLoad::GetHelp(const KeyInfo& tKeyInfo, const ViewType eType)
 
 		for (i = _mapKeyHelp.begin(); i != _mapKeyHelp.end(); ++i)
 		{
-			//LOG("GetCommand [%s] [%s] [%s] ", i->second.c_str(), i->first.c_str(), sKeyName.c_str());
 			if ( i->second == sKeyName )
 			{
 				if (eType == i->first->eType)

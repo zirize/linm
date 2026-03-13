@@ -48,6 +48,7 @@ extern chtype TTEE;
 enum LINECODE { AUTOLINE, CHARLINE, ACSLINE };
 
 extern LINECODE e_nBoxLineCode;
+extern bool g_bNoMouse;
 
 ///	\brief	color, attribute setting function with font color.
 ///	\param	font	font color

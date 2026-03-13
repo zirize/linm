@@ -260,7 +260,7 @@ void	Dialog_FileBox::Draw()
 // _nCol, _nRow getsize 
 void	NCurses_Panel::InitDraw()
 {
-	int nSize = _vDirFiles.size();
+	int nSize = _bFilterMode ? (int)_vFilterFiles.size() : (int)_vDirFiles.size();
 	const int nMaxlen = 12;
 
 	// Auto Column Mode.
@@ -349,7 +349,9 @@ void	NCurses_Panel::LineDraw()
 
 	// Find Section.
 	setcol(g_tColorCfg._DefaultColor);
-	if (!_sStrSearch.empty())
+	if (_bFilterMode)
+		mvwprintw(_pWin, 0, width-24, "[F:%-20s]", _sFilterStr.c_str());
+	else if (!_sStrSearch.empty())
 		mvwprintw(_pWin, 0, width-22, "[%-20s]", _sStrSearch.c_str());
 	//mvwprintw(_pWin, 0, 0, "[%d %d %d %d %d]", _uCur, _nPage, _nBefPage, _nCol, _nRow);
 
@@ -364,6 +366,9 @@ void NCurses_Panel::Draw()
 	Dialog_FileBox* pFileBox = NULL;
 	File*	pFile = NULL;
 
+	// Use filtered list when filter mode is active
+	vector<File*>& vFiles = _bFilterMode ? _vFilterFiles : _vDirFiles;
+
 	if ( _nCol != 0 && _nRow != 0 )
 		_nPage = _uCur / (_nCol * _nRow);
 
@@ -376,9 +381,9 @@ void NCurses_Panel::Draw()
 		for (int nRow = 1; nRow < _nRow+1; nRow++)
 		{
 			pFileBox = _vDrawFileList[nNum];
-			if (nCur < (int)_vDirFiles.size())
+			if (nCur < (int)vFiles.size())
 			{
-				pFile = _vDirFiles[nCur];
+				pFile = vFiles[nCur];
 				if (_bChange)
 				{
 					pFileBox->SetForm((Form*)this);

@@ -8,6 +8,9 @@ NoSplit_NextWindow = Off
 # console tansparency support
 Transparency = Off
 
+# Mouse support On/Off
+Mouse = On
+
 # sort (0=none 1=name 2=ext 3=size 4=time 5=color)
 Sort = 5
 

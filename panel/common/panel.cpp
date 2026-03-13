@@ -43,6 +43,10 @@ void	Panel::Init()
 	_uSelSize = 0;
 	_bSearch = false;
 
+	_bFilterMode = false;
+	_sFilterStr.clear();
+	_vFilterFiles.clear();
+
 	_tMemFile.Clear();	
 	_vDirFiles.clear();
 }
@@ -265,6 +269,10 @@ bool	Panel::Read(const string& sPathConst)
 		pReader->SetErrMsgShow(false); // 메시지 박스 보이지 않게.
 	}
 
+	// Save filter state across directory changes
+	bool bSaveFilterMode = _bFilterMode;
+	string sSaveFilterStr = _sFilterStr;
+
 	// . panel init
 	Init();
 
@@ -291,6 +299,13 @@ bool	Panel::Read(const string& sPathConst)
 	}
 
 	Sort();
+
+	// Restore filter state after directory load
+	if (bSaveFilterMode) {
+		_bFilterMode = true;
+		_sFilterStr = sSaveFilterStr;
+		ApplyFilter();
+	}
 
 	_pReader = pReader;
 
@@ -336,10 +351,11 @@ void	Panel::Key_Left()
 /// @brief	오른쪽 방향 키
 void	Panel::Key_Right()
 {
+	vector<File*>& vFiles = _bFilterMode ? _vFilterFiles : _vDirFiles;
 	int nCur;
 	nCur = _uCur+_nRow;
-	if (nCur > (int)_vDirFiles.size()-1)
-		nCur = _vDirFiles.size()-1;
+	if (nCur > (int)vFiles.size()-1)
+		nCur = vFiles.size()-1;
 	SetCur(nCur);
 	_bChange = false;
 }
@@ -355,7 +371,8 @@ void	Panel::Key_Up()
 /// @brief	아래쪽 방향키
 void	Panel::Key_Down()
 {
-	if (_uCur < _vDirFiles.size()-1)
+	vector<File*>& vFiles = _bFilterMode ? _vFilterFiles : _vDirFiles;
+	if (_uCur < vFiles.size()-1)
 		SetCur(_uCur+1);
 	_bChange = false;
 }
@@ -373,10 +390,11 @@ void	Panel::Key_PageUp()
 /// @brief	page down key
 void	Panel::Key_PageDown()
 {
+	vector<File*>& vFiles = _bFilterMode ? _vFilterFiles : _vDirFiles;
 	int nCur;
 	nCur = _uCur + (_nRow*_nCol);
-	if (nCur > (int)_vDirFiles.size()-1)
-		nCur=_vDirFiles.size()-1;
+	if (nCur > (int)vFiles.size()-1)
+		nCur=vFiles.size()-1;
 
 	SetCur(nCur);
 	_bChange = false;
@@ -392,38 +410,42 @@ void	Panel::Key_Home()
 /// @brief	Key End
 void	Panel::Key_End()
 {
-	SetCur(_vDirFiles.size()-1);	
+	vector<File*>& vFiles = _bFilterMode ? _vFilterFiles : _vDirFiles;
+	SetCur(vFiles.size()-1);	
 	_bChange = false;
 }
 
 void	Panel::SelectExecute()
 {
+	File* pCurFile = GetCurFile();
+	if (!pCurFile) return;
+
 	// 파일 실행
-	if (_pReader->isChkFile(*_vDirFiles[_uCur]) == false)
+	if (_pReader->isChkFile(*pCurFile) == false)
 	{
 		return;
 	}
 
 	vector<string> 	q;
 
-	string 	sFileName 	= MLSUTIL::addslash( _vDirFiles[_uCur]->sFullName );
-	string 	sPrgExeCmd	= g_tCfg.GetExtBind(_vDirFiles[_uCur]->Ext());
+	string 	sFileName 	= MLSUTIL::addslash( pCurFile->sFullName );
+	string 	sPrgExeCmd	= g_tCfg.GetExtBind(pCurFile->Ext());
 	string 	sCmd;
 
 	vector<string>		vCmd, vView;
 		
 	if (sPrgExeCmd.size() == 0) 
 	{
-		sPrgExeCmd = g_tCfg.GetNameBind(_vDirFiles[_uCur]->sName);
+		sPrgExeCmd = g_tCfg.GetNameBind(pCurFile->sName);
 	}
 
 	LOG("SelectExecute :: [%s]", sPrgExeCmd.c_str());
 
 	if (sPrgExeCmd.size() == 0)
 	{
-		if (_vDirFiles[_uCur]->isExecute())
+		if (pCurFile->isExecute())
 		{
-			sCmd = MLSUTIL::addslash( _vDirFiles[_uCur]->sFullName );
+			sCmd = MLSUTIL::addslash( pCurFile->sFullName );
 		}
 	}
 	else
@@ -529,9 +551,10 @@ void	Panel::SelectExecute()
 /// @brief	Key Enter
 void	Panel::Key_Enter()
 {
-	if ( _vDirFiles.size() <= _uCur ) return;
+	vector<File*>& vFiles = _bFilterMode ? _vFilterFiles : _vDirFiles;
+	if ( vFiles.size() <= _uCur ) return;
 
-	File*	pFile = _vDirFiles[_uCur];
+	File*	pFile = vFiles[_uCur];
 
 	if (pFile->bDir)
 	{
@@ -739,13 +762,15 @@ void Panel::Deselect(File &f)
 /// @brief	현재 파일 선택
 void Panel::ToggleSelect()
 {
-	if (_vDirFiles[_uCur]->bSelected)
+	File* pCurFile = GetCurFile();
+	if (!pCurFile) return;
+	if (pCurFile->bSelected)
 	{
-		Deselect(*_vDirFiles[_uCur]);
+		Deselect(*pCurFile);
 	}
 	else
 	{
-		Select(*_vDirFiles[_uCur]);
+		Select(*pCurFile);
 	}
 }
 
@@ -822,7 +847,79 @@ Panel::SearchProcess(KeyInfo&	tKeyInfo)
 	return false;
 }
 
-/// @brief	비슷한 이름을 가진 파일을 찾는다.
+void Panel::ApplyFilter()
+{
+	_vFilterFiles.clear();
+	if (_sFilterStr.empty())
+	{
+		_vFilterFiles = _vDirFiles;
+	}
+	else
+	{
+		string sLower = Tolower(_sFilterStr);
+		for (int i = 0; i < (int)_vDirFiles.size(); i++)
+		{
+			File* pFile = _vDirFiles[i];
+			if (pFile->bDir || Tolower(pFile->sName).find(sLower) != string::npos)
+				_vFilterFiles.push_back(pFile);
+		}
+	}
+
+	// Adjust cursor within filtered list
+	if (_uCur >= _vFilterFiles.size())
+		_uCur = _vFilterFiles.empty() ? 0 : (uint)_vFilterFiles.size() - 1;
+	SetCur(_uCur);
+}
+
+bool Panel::FilterProcess(KeyInfo& tKeyInfo)
+{
+	if (!_bFilterMode) return false;
+
+	int key = (int)tKeyInfo;
+
+	// ESC: exit filter mode
+	if (tKeyInfo.sKeyName == "ESC")
+	{
+		FilterExit();
+		return true;
+	}
+
+	// Backspace: remove last char
+	if (tKeyInfo.sKeyName == "BS")
+	{
+		if (!_sFilterStr.empty())
+		{
+			_sFilterStr.erase(_sFilterStr.size() - 1, 1);
+			ApplyFilter();
+		}
+		return true;
+	}
+
+	// Printable ASCII: add to filter string
+	if (32 < key && key <= 126)
+	{
+		_sFilterStr += (char)key;
+		ApplyFilter();
+		return true;
+	}
+
+	// Arrow keys and other navigation: pass through (return false)
+	return false;
+}
+
+void Panel::FilterExit()
+{
+	_bFilterMode = false;
+	_sFilterStr.clear();
+	_vFilterFiles.clear();
+	_bChange = true;
+	// Ensure cursor is valid in full list
+	if (_uCur >= _vDirFiles.size() && !_vDirFiles.empty())
+		_uCur = (uint)_vDirFiles.size() - 1;
+	SetCur(_uCur);
+}
+
+
 /// @param	str		IN 찾을 파일 앞자리나 전체 파일명
 /// @param	d_index	OUT 찾은 파일 Index.
 /// @param  s_index IN 파일을 찾을 첫번째 인덱스
@@ -902,9 +999,10 @@ int Panel::GetSelection(Selection& tSelection)
 {
 	if (_uSelNum == 0)
 	{
-		if (_vDirFiles[_uCur]->sName != "..")
+		File* pCurFile = GetCurFile();
+		if (pCurFile && pCurFile->sName != "..")
 		{
-			tSelection.Add(_vDirFiles[_uCur]);
+			tSelection.Add(pCurFile);
 		}
 	}
 	else

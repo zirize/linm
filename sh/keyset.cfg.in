@@ -139,7 +139,7 @@ Cmd_Help    = F1
 Cmd_Refresh = F5
 Cmd_Menu    = F12
 Cmd_ESC     = ESC
-Cmd_Quit    = Alt+X,Ctrl+Q
+Cmd_Quit    = Alt+X, Ctrl+D,Ctrl+Q
 
 # Linm Panel key
 [Command_Panel]
@@ -156,7 +156,7 @@ Cmd_ExtEditor = F4
 Cmd_Copy    = Alt+C
 Cmd_Move    = Alt+M
 Cmd_Mkdir   = F7
-Cmd_Remove  = F8, Ctrl+D, Alt+D
+Cmd_Remove  = F8, Alt+D
 Cmd_SizeInfo= F9
 Cmd_MCD     = F10
 Cmd_QCD     = F11
@@ -178,6 +178,7 @@ Cmd_BoxCodeChange = Alt+L
 Cmd_LangChange = Ctrl+L
 Cmd_HiddenFileView = Alt+Z
 Cmd_FileOwnerView = Alt+O
+Cmd_FilterMode = Alt+F
 Cmd_SortChange = Alt+S
 Cmd_SortAscDescend = Alt+A
 Cmd_ColumnAuto = Alt+0
@@ -229,7 +230,7 @@ Cmd_Scan    = F4
 
 Cmd_Move    = F6
 Cmd_Mkdir   = F7
-Cmd_Remove  = F8, Ctrl+D, Alt+D
+Cmd_Remove  = F8, Alt+D
 Cmd_SizeInfo = F9
 Cmd_MountList  = F10,Ctrl+F
 Cmd_NextWindow = Ctrl+E,TAB
@@ -279,57 +280,101 @@ Cmd_ESC = _("Console View & Ftp Close")
 Cmd_Refresh = _("Refresh")
 
 [Help_Panel]
-Cmd_Rename = _("Rename")
-Cmd_Editor = _("Editor")
-Cmd_ExtEditor = _("VIM")
-Cmd_Move = _("Move")
-Cmd_Mkdir = _("Mkdir")
-Cmd_Remove = _("Remove")
-Cmd_SizeInfo = _("SizeInfo")
-Cmd_MCD = _("MCD")
-Cmd_QCD = _("QCD")
+Group_FileOp    = "File Operations"
+Cmd_Copy        = _("Copy")
+Cmd_Move        = _("Move")
+Cmd_Remove      = _("Remove")
+Cmd_Rename      = _("Rename")
+Cmd_Extract     = _("Extract Archive")
+Cmd_Execute     = _("Execute File")
 
-Cmd_Select = _("File or Directory Select")
-Cmd_Quit = _("LinM Quit")
-Cmd_NextWindow = _("Next Window")
-Cmd_Split = _("Window Split")
-Cmd_Shell = _("Command Shell")
+Group_FileCreate = "File Creation"
+Cmd_Mkdir       = _("Mkdir")
+Cmd_NewFile     = _("New File (Editor)")
+Cmd_TouchFile   = _("Touch file")
 
-Cmd_ClipCopy = _("Copy files into clipboard.")
-Cmd_ClipCut = _("Cut files into clipboard.")
-Cmd_ClipPaste = _("Clipboard files current directory paste.")
-Cmd_ViewClip = _("Clipboard files view.")
-Cmd_MountList  = _("Mount List")
+Group_Navigate  = "Navigation"
+Cmd_GoParent    = _("Go Parent Directory")
+Cmd_GoRoot      = _("Go Root Directory")
+Cmd_GoHome      = _("Go Home Directory")
+Cmd_Back        = _("Go back directory")
+Cmd_Forward     = _("Go forward directory")
 
-Cmd_Back = _("Go back directory")
-Cmd_Forward = _("Go forward directory")
+Group_Select    = "Selection"
+Cmd_Select      = _("File or Directory Select")
+Cmd_SelectAll   = _("Select All")
+Cmd_SelectInvert = _("Select Invert")
 
-Cmd_NewFile = _("Editor new file")
-Cmd_TouchFile = _("Touch file")
-Cmd_Chmod = _("Chmod")
-Cmd_Chown = _("Chown")
-Cmd_Diff = _("Diff")
+Group_Windows   = "Windows"
+Cmd_Split       = _("Window Split")
+Cmd_SplitViewSync = _("Split View Sync")
+Cmd_NextWindow  = _("Next Window")
 
-Cmd_RemoteConnProps = _("Remote")
-Cmd_SyncDirectory = _("Sync Directory")
+Group_View      = "View"
+Cmd_HiddenFileView = _("Toggle Hidden File View")
+Cmd_FileOwnerView  = _("Toggle File Owner View")
+Cmd_BoxCodeChange  = _("Box Code Change")
+Cmd_LangChange     = _("Language Change")
+
+Group_Columns   = "Columns"
+Cmd_ColumnAuto  = _("Column Auto")
+Cmd_Column1     = _("1 Column View")
+Cmd_Column2     = _("2 Column View")
+Cmd_Column3     = _("3 Column View")
+Cmd_Column4     = _("4 Column View")
+
+Group_Filter    = "Filter & Sort"
+Cmd_FilterMode      = _("Filter files by name")
+Cmd_SortChange      = _("Change Sort Type")
+Cmd_SortAscDescend  = _("Toggle Sort Asc/Desc")
+
+Group_Clipboard = "Clipboard"
+Cmd_ClipCopy    = _("Copy files into clipboard.")
+Cmd_ClipCut     = _("Cut files into clipboard.")
+Cmd_ClipPaste   = _("Clipboard files current directory paste.")
+Cmd_ViewClip    = _("Clipboard files view.")
+
+Group_FileInfo  = "File Info"
+Cmd_SizeInfo    = _("SizeInfo")
+Cmd_Chmod       = _("Chmod")
+Cmd_Chown       = _("Chown")
+Cmd_Diff        = _("Diff")
+Cmd_FileFind    = _("Find File")
+
+Group_Remote    = "Remote"
+Cmd_RemoteConnect   = _("Remote Connect")
+Cmd_RemoteClose     = _("Remote Close")
+Cmd_RemoteConnProps = _("Remote Properties")
+
+Group_Tools     = "Tools"
+Cmd_Shell       = _("Command Shell")
+Cmd_MountList   = _("Mount List")
+Cmd_MCD         = _("MCD")
+Cmd_QCD         = _("QCD")
 Cmd_ConsoleMode = _("Console Mode (MC similar)")
+Cmd_SyncDirectory = _("Sync Directory")
+
+Group_Config    = "Configuration"
+Cmd_SettingChange = _("Configure")
+Cmd_Editor      = _("Editor")
+Cmd_ExtEditor   = _("VIM")
 
 [Help_Mcd]
 Cmd_Mcd_SubDirOneSearch = _("search subdirectory.")
 Cmd_Mcd_SubDirAllSearch = _("all search directory.")
 Cmd_Mcd_SubDirClear = _("subdirectory tree screen clean.")
 
-Cmd_ClipCopy = _("current directory into clipboard.")
-Cmd_ClipCut = _("cut current directory into clipboard.")
-Cmd_ClipPaste = _("clipboard directory is current directory paste.")
+Cmd_ClipCopy    = _("current directory into clipboard.")
+Cmd_ClipCut     = _("cut current directory into clipboard.")
+Cmd_ClipPaste   = _("clipboard directory is current directory paste.")
 
 Cmd_RemoteConnect = _("ftp/sftp connect")
 Cmd_RemoteClose = _("connect close")
 
-Cmd_Mkdir  = _("Mkdir")
-Cmd_Rename = _("Rename")
-Cmd_Remove = _("Remove")
-Cmd_Move   = _("Move")
+Cmd_Mkdir   = _("Mkdir")
+Cmd_Rename  = _("Rename")
+Cmd_Remove  = _("Remove")
+Cmd_Move    = _("Move")
 
 Cmd_NextWindow  = _("Next Window")
 Cmd_Split       = _("Split Window")

@@ -65,7 +65,7 @@ void fontSelect()
 }
 */
 
-#define 	__LINM_CFGPATH__		"~/.linm"
+#define 	__LINM_CFGPATH__		"~/.config/linm"
 
 namespace { // 처음 기본 세팅
 
@@ -118,12 +118,13 @@ bool Initialize()
 		}
 
 		// . config dir 지정
-		g_tCfg.SetStaticValue("CfgHome", g_tCfg.GetValue("Static", "Home") + ".linm/");
-		g_tCfg.SetStaticValue("TmpDir", g_tCfg.GetValue("Static", "Home") + ".linm/linm_tmpdir/");
+		g_tCfg.SetStaticValue("CfgHome", g_tCfg.GetValue("Static", "Home") + ".config/linm/");
+		g_tCfg.SetStaticValue("TmpDir", g_tCfg.GetValue("Static", "Home") + ".config/linm/linm_tmpdir/");
 		g_tColorCfg.Init();
 		
-		// 홈에 .linm를 만든다. mcd treeinfo를 저장하기 위해서도 필요
-		mkdir((g_tCfg.GetValue("Static", "Home") + ".linm").c_str(), 0755);
+		// 홈에 .config/linm를 만든다. mcd treeinfo를 저장하기 위해서도 필요
+		mkdir((g_tCfg.GetValue("Static", "Home") + ".config").c_str(), 0755);
+		mkdir((g_tCfg.GetValue("Static", "Home") + ".config/linm").c_str(), 0755);
 		// 파일 복사에 필요한 tmp 디렉토리.
 		mkdir((g_tCfg.GetValue("Static", "TmpDir")).c_str(), 0777);
 	}
@@ -148,7 +149,7 @@ bool Initialize()
 				/*
 				if (cfgfile == sCfgDefaultPath)
 				{
-					string sCmd = "cp " + sCfgDefaultPath + " " + g_tCfg.GetValue("Static", "Home") + ".linm";
+					string sCmd = "cp " + sCfgDefaultPath + " " + g_tCfg.GetValue("Static", "Home") + ".config/linm/";
 					system(sCmd.c_str());
 				}
 				*/
@@ -193,7 +194,7 @@ bool Initialize()
 				/*
 				if (colfile == sCfgColorPath)
 				{
-					string sCmd = "cp " + sCfgColorPath + " " + g_tCfg.GetValue("Static", "Home") + ".linm";
+					string sCmd = "cp " + sCfgColorPath + " " + g_tCfg.GetValue("Static", "Home") + ".config/linm/";
 					system(sCmd.c_str());
 				}
 				*/
@@ -270,7 +271,7 @@ bool	Load_KeyFile()
 #endif
 				if (keyfile == sKeyCfgPath)
 				{
-					string sCmd = "cp " + sKeyCfgPath + " " + g_tCfg.GetValue("Static", "Home") + ".linm";
+					string sCmd = "cp " + sKeyCfgPath + " " + g_tCfg.GetValue("Static", "Home") + ".config/linm/";
 					system(sCmd.c_str());
 				}
 				break;
@@ -336,7 +337,7 @@ int main( int argc, char ** argv )
 		
 		if (!Initialize())
 		{
-			QMessageBox::critical( NULL, QObject::tr("Error"), QObject::tr("config file not founed.(~/.linm/*.cfg") );
+			QMessageBox::critical( NULL, QObject::tr("Error"), QObject::tr("config file not founed.(~/.config/linm/*.cfg") );
 			return 0;
 		}
 

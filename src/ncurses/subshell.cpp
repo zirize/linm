@@ -290,7 +290,7 @@ void	SubShell::InitSubShellChild(const string& sPtyName, const string& sDir)
 		setenv ("MC_SID", strSid.c_str(), 1 );	// Avoid conflict with MC(Midnight Commander).
     }
     
-	sInitFile = "~/.linm/bashrc";
+	sInitFile = "~/.config/linm/bashrc";
 	if (access (sInitFile.c_str(), R_OK) == -1)
 	    sInitFile = "~/.bashrc";
 	

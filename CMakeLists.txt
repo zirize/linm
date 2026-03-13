@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 project (linm)
 
 set(PACKAGE "linm")
-set(VERSION "0.9.1")
+set(VERSION "0.9.3")
 set(CMAKE_CXX_STANDARD 11)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wp,-w")
@@ -197,7 +197,7 @@ endif()
 
 ########### set configure file
 
-option(LINM_CFGPATH "set configure file install path. (default: '${CMAKE_INSTALL_PREFIX}/etc/linm')")
+set(LINM_CFGPATH "" CACHE STRING "set configure file install path. (default: '${CMAKE_INSTALL_PREFIX}/etc/linm')")
 
 if(LINM_CFGPATH)
     set(__LINM_CFGPATH__ "${LINM_CFGPATH}")
@@ -209,15 +209,15 @@ message( STATUS "Option - configure path : '${__LINM_CFGPATH__}'" )
 
 ########### set bin path
 
-option(LINM_BINPATH "set binary file install path. (default: '${CMAKE_INSTALL_PREFIX}/bin/linm')")
+set(LINM_BINPATH "" CACHE STRING "set binary file install path. (default: '${CMAKE_INSTALL_PREFIX}/bin')")
 
 if(LINM_BINPATH)
     set(__LINM_BINPATH__ "${LINM_BINPATH}")
 else()
-    set(__LINM_BINPATH__ "${CMAKE_INSTALL_PREFIX}/bin/linm")
+    set(__LINM_BINPATH__ "${CMAKE_INSTALL_PREFIX}/bin")
 endif(LINM_BINPATH)
 
-message( STATUS "Option - configure path : '${__LINM_CFGPATH__}'" )
+message( STATUS "Option - binary path : '${__LINM_BINPATH__}'" )
 
 ########### set debug mode
 

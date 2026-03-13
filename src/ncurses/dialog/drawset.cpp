@@ -37,6 +37,7 @@ chtype BTEE=ACS_BTEE;			///< Botton tree char.
 chtype TTEE=ACS_TTEE;			///< Bottom tree char.
 
 LINECODE	e_nBoxLineCode = AUTOLINE;	///< BOX LINE MODE
+bool		g_bNoMouse = false;			///< Ignore mouse input when true
 
 static Curses_Dialog*		s_pDialog = NULL;
 static Curses_Progress*		s_pProgressBox = NULL;

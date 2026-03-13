@@ -52,6 +52,9 @@ void CmdPanelImp::SettingChange() {
     tOBJ.push_back(ConfigOBJ("Transparency", _("console tansparency"),
                              g_tCfg.GetValue("Default", "Transparency", "Off"),
                              CHECKBOX));
+    tOBJ.push_back(ConfigOBJ("Mouse", _("mouse support"),
+                             g_tCfg.GetValue("Default", "Mouse", "On"),
+                             CHECKBOX));
     tOBJ.push_back(ConfigOBJ("NoSplit_NextWindow", _("always enable change to next window"),
                              g_tCfg.GetValue("Default", "NoSplit_NextWindow", "Off"),
                              CHECKBOX));

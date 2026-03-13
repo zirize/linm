@@ -4,7 +4,7 @@
 
 Summary: 		LinM visual shell
 Name: 			linm
-Version: 		0.8
+Version: 		0.9.3
 Release:		1
 Vendor: 		Shells
 #Copyright: 	GPL
@@ -12,7 +12,7 @@ License: 		GPL
 Group: 			System Environment
 Packager: 		Byoungyoung, La
 BuildRoot: 		%{_tmppath}/%{name}-%{version}-root
-Source: 		linm-0.8-1.tar.gz
+Source: 		linm-0.9.3-1.tar.gz
 URL:			http://mls.kldp.net
 BuildRequires:	ncurses-devel >= 5.2.0, openssl-devel >= 0.9.6, samba-common >= 3.0.0
 Requires: 		ncurses >= 5.2.0, openssl >= 0.9.6, samba-common >= 3.0.0
@@ -77,6 +77,16 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_datadir}/*
 
 %changelog
+* Sat Mar 14 2026 Byoungyoung La, <la9527@daum.net>
+- 0.9.3 version make
+- Add Alt+F real-time filename filter feature
+- Add --nomouse / LINM_NO_MOUSE option to disable mouse
+- Add Mouse = On/Off option in default.cfg
+- Improve Alt+S sort selection with popup menu
+- Reorganize F1 help with logical grouping and ordered display
+* Tue Mar 03 2026 Byoungyoung La, <la9527@daum.net>
+- 0.9.2 version make
+- Change default config directory to .config/linm
 * Sun Feb 10 2008 Byoungyoung La, <la9527@daum.net>
 - 0.8.1 version make
 * Mon Dec 31 2007 Byoungyoung La, <la9527@daum.net>

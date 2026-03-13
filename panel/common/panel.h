@@ -104,6 +104,10 @@ public:
 	bool	_bSearch;	///< 검색 여부
 	int		_nSort;		///< 현재 소트 위치
 
+	bool	_bFilterMode;	///< 필터 모드 활성 여부
+	string	_sFilterStr;	///< 현재 필터 문자열
+	vector<File*> _vFilterFiles;  ///< 필터된 파일 목록
+
 	bool	_bDirSortAscend;///< 디렉토리 정렬 순서
 	bool	_bFileSortAscend;///<파일 정렬 순서
 
@@ -122,6 +126,8 @@ public:
 		_bShowHidden = false;
 		_nSortMethod = SORT_COLOR;
 
+		_bFilterMode = false;
+
 		PluginLoader(&_tCtlReader);
 	}
 
@@ -132,19 +138,21 @@ public:
 
 	File*		GetCurFile() 
 	{ 
-		uint n = _vDirFiles.size();
+		vector<File*>& vFiles = _bFilterMode ? _vFilterFiles : _vDirFiles;
+		uint n = vFiles.size();
 		if (n > _uCur && n != 0)
-			return _vDirFiles[_uCur];
+			return vFiles[_uCur];
 		return NULL;
 	}
 
 	File*		GetNextFile()
 	{
-		uint n = _vDirFiles.size();
+		vector<File*>& vFiles = _bFilterMode ? _vFilterFiles : _vDirFiles;
+		uint n = vFiles.size();
 		if (n > _uCur+1 && n != 0)
-			return _vDirFiles[_uCur+1];
+			return vFiles[_uCur+1];
 		if ( n >= _uCur+1 && n != 0)
-			return _vDirFiles[n-1];
+			return vFiles[n-1];
 		return NULL;
 	}
 
@@ -240,6 +248,11 @@ public:
 	}
 	
 	bool	SearchProcess(KeyInfo&	tKeyInfo);
+	bool	FilterProcess(KeyInfo&	tKeyInfo);
+	void	FilterExit();
+	void	ApplyFilter();
+	bool	IsFilterMode() const { return _bFilterMode; }
+	const string& GetFilterStr() const { return _sFilterStr; }
 	bool	SearchExactFile(const string & fileName, uint & fileIndex, bool bFullName = false) const;
 	bool	SearchMatchingFile(const string &str, uint & d_index, int s_index = 0);
 	bool	SetCurFileName(const string& sFileName);

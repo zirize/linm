@@ -1,3 +1,23 @@
+2026-03-14 Bill,Kang <zirize@gmail.com>
+	- Alt+F로 파일 이름 필터 기능 추가 (실시간 파일 목록 필터링, 디렉토리 제외).
+	- 필터 상태가 디렉토리 이동 시에도 유지되도록 개선.
+	- Alt+S로 정렬 방식을 팝업 메뉴에서 선택 가능하도록 개선.
+	- --nomouse / -M 옵션 및 LINM_NO_MOUSE 환경변수로 마우스 비활성화 기능 추가.
+	- default.cfg에 Mouse = On/Off 옵션 추가 (설정 파일로 마우스 제어).
+	- F1 도움말 시스템 재정리: 논리적 그룹 구분, 표시 순서 보장, 누락 항목 추가.
+	- Ctrl+D 키를 Cmd_Remove(삭제)에서 제거, Cmd_Quit 전용으로 변경.
+	- 버전 업 시 설정 파일 스마트 병합: Yes/No 다이얼로그 대신 자동 병합
+	  (기존 설정 유지, 신규 키만 추가), 병합 후 execvp로 재시작하여 설정 완전 반영.
+	- Configure::MergeFromFile() 추가: 시스템 기본 cfg에서 누락 키만 user cfg에 병합.
+	- default/keyset/colorset/syntexset 4개 cfg 버전을 개별 체크하여
+	  하나라도 버전 불일치 시 병합 루틴 발동.
+	- 0.9.3 으로 버전 올림.
+	- 기본 설정 디렉토리를 .linm 에서 .config/linm 으로 변경.
+	- LastPath 경로가 유효하지 않을 경우 segfault 나는 문제 수정.
+	- 설정 파일의 버전이 일치하지 않을 때 반복적으로 복사를 묻는 문제 수정.
+	- CMake 옵션(LINM_CFGPATH, LINM_BINPATH)이 정상적으로 작동하도록 수정.
+	- 0.9.2 로 버전 올림.
+
 2008-05-26 Byoungyoung,La <la9527@daum.net>
   - 커맨드에서 탭 입력시 디렉토리 끝에 '/' 들어가게 반영
   
@@ -160,7 +180,7 @@
 2006-01-21 라병영 <la9527@daum.net>
 	- sftp, ftp 복사시 한글일 경우 EUC-KR, UTF8 복사를 물어보게 수정.
 	- sftp, ftp에서 Editor로 이용하여 파일 저장시 파일이 자동으로 sftp, ftp로 저장되게 수정.
-	- tmp 디렉토리를 ~/.linm/linmtmp_dir 로 바꾸고 tmp에 파일 지워짖 않은 버그 수정.
+	- tmp 디렉토리를 ~/.config/linm/linmtmp_dir 로 바꾸고 tmp에 파일 지워짖 않은 버그 수정.
 	- cygwin 의 키코드 다른 문제 수정.
 
 2006-01-19 라병영 <la9527@daum.net>

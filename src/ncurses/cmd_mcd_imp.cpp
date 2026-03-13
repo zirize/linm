@@ -767,7 +767,7 @@ void	CmdMcdImp::McdSave()
 		string sSaveName = 	g_tCfg.GetValue("Static", "CfgHome") + "McdDirSave/" +
 							 sPath;
 
-		// make 'McdDirSave' directory in '~/.linm'. and saved the MCD tree information.
+		// make 'McdDirSave' directory in '~/.config/linm'. and saved the MCD tree information.
 		mkdir((g_tCfg.GetValue("Static", "CfgHome") + "McdDirSave").c_str(), 0755);
 		
 		_pMcd->Save( sSaveName.c_str() );

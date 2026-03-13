@@ -198,8 +198,8 @@ public:
 					const string& val);
 
 public:
-	// map< key command, help >
-	map<TypeInfo*, string>	_mapKeyHelp;
+	// vector< TypeInfo*, help text > — ordered by insertion (config file order)
+	vector<pair<TypeInfo*, string>>	_mapKeyHelp;
 
 protected:
 	// map< key command, key Name  >

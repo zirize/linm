@@ -1189,6 +1189,19 @@ void CmdPanelImp::SortColor()
 	_pPanel->Sort();
 }
 
+void CmdPanelImp::FilterMode()
+{
+	if (_pPanel->IsFilterMode())
+		_pPanel->FilterExit();
+	else
+	{
+		_pPanel->_bFilterMode = true;
+		_pPanel->ApplyFilter();
+	}
+	_pPanel->_bChange = true;
+	g_tMainFrame.Refresh();
+}
+
 void CmdPanelImp::ColumnAuto() 
 { 
 	_pPanel->SetViewColumn(0);

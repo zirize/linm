@@ -106,13 +106,14 @@ bool Initialize()
 		}
 
 		// . config directory setting.
-		g_tCfg.SetStaticValue("CfgHome", g_tCfg.GetValue("Static", "Home") + ".linm/");
-		g_tCfg.SetStaticValue("TmpDir", g_tCfg.GetValue("Static", "Home") + ".linm/linm_tmpdir/");
-		g_tCfg.SetStaticValue("TmpCopyDir", g_tCfg.GetValue("Static", "Home") + ".linm/linm_copydir/");
+		g_tCfg.SetStaticValue("CfgHome", g_tCfg.GetValue("Static", "Home") + ".config/linm/");
+		g_tCfg.SetStaticValue("TmpDir", g_tCfg.GetValue("Static", "Home") + ".config/linm/linm_tmpdir/");
+		g_tCfg.SetStaticValue("TmpCopyDir", g_tCfg.GetValue("Static", "Home") + ".config/linm/linm_copydir/");
 		g_tColorCfg.Init();
 		
-		// make '.linm' in the home directory. It's need for save the mcd tree information.
-		mkdir((g_tCfg.GetValue("Static", "Home") + ".linm").c_str(), 0755);
+		// make '.config/linm' in the home directory. It's need for save the mcd tree information.
+		mkdir((g_tCfg.GetValue("Static", "Home") + ".config").c_str(), 0755);
+		mkdir((g_tCfg.GetValue("Static", "Home") + ".config/linm").c_str(), 0755);
 		// tmp directory required to view the files.
 		mkdir((g_tCfg.GetValue("Static", "TmpDir")).c_str(), 0777);		
 		// tmp directory required to copy the files.
@@ -138,7 +139,7 @@ bool Initialize()
 #endif
 				if (cfgfile == sCfgDefaultPath)
 				{
-					string sCmd = "cp " + sCfgDefaultPath + " " + g_tCfg.GetValue("Static", "Home") + ".linm";
+					string sCmd = "cp " + sCfgDefaultPath + " " + g_tCfg.GetValue("Static", "Home") + ".config/linm/";
 					system(sCmd.c_str());
 				}
 				break;
@@ -181,7 +182,7 @@ bool Initialize()
 #endif
 				if (colfile == sCfgColorPath)
 				{
-					string sCmd = "cp " + sCfgColorPath + " " + g_tCfg.GetValue("Static", "Home") + ".linm";
+					string sCmd = "cp " + sCfgColorPath + " " + g_tCfg.GetValue("Static", "Home") + ".config/linm/";
 					system(sCmd.c_str());
 				}
 				break;
@@ -238,7 +239,7 @@ bool	Load_KeyFile()
 #endif
 				if (keyfile == sKeyCfgPath)
 				{
-					string sCmd = "cp " + sKeyCfgPath + " " + g_tCfg.GetValue("Static", "Home") + ".linm";
+					string sCmd = "cp " + sKeyCfgPath + " " + g_tCfg.GetValue("Static", "Home") + ".config/linm/";
 					system(sCmd.c_str());
 				}
 				break;
@@ -283,7 +284,7 @@ bool	Load_KeyFile()
 #endif
 				if (syntexFile == sCfgSyntaxExtPath)
 				{
-					string sCmd = "cp " + sCfgSyntaxExtPath + " " + g_tCfg.GetValue("Static", "Home") + ".linm";
+					string sCmd = "cp " + sCfgSyntaxExtPath + " " + g_tCfg.GetValue("Static", "Home") + ".config/linm/";
 					system(sCmd.c_str());
 				}
 				break;
@@ -333,7 +334,8 @@ void PrintHelp(void)
 		"\t --col=FILE   : 컬러셋 파일 지정\n"
 		"\t --key=FILE   : 키 파일 지정\n"
 		"\t --noline     : 선형태를 -,|,+ 로 바꿈\n"
-		"\t --mcd        : 바로 MCD 실행 \n";
+		"\t --mcd        : 바로 MCD 실행 \n"
+		"\t --nomouse    : 마우스 입력 무시 (환경변수 LINM_NO_MOUSE=1 도 사용 가능)\n";
 
 	const char *sStr_En =
 		"LinM is a clone of Mdir, the famous file manager from the MS-DOS age. \n"
@@ -351,7 +353,8 @@ void PrintHelp(void)
 		"\t --col=FILE   : load colorset file\n"
 		"\t --key=FILE   : load keybind file\n"
 		"\t --noline     : change box code to ascii character(-,|,+)\n"
-		"\t --mcd        : excute Mcd \n";
+		"\t --mcd        : excute Mcd \n"
+		"\t --nomouse    : ignore mouse input (env var LINM_NO_MOUSE=1 also works)\n";
 
 	cout << ChgEngKor(sStr_En, sStr_Ko) << endl;
 }
@@ -371,8 +374,12 @@ void OptionProc(int	argc, char * const	argv[])
 		{ "cfg",    required_argument, NULL,   'c' },
 		{ "col",    required_argument, NULL,   's' },
 		{ "key",    required_argument, NULL,   'k' },
+		{ "nomouse", no_argument,       NULL,   'M' },
 		{ NULL,		0,				   NULL,	0  }
 	};
+
+	if ( getenv("LINM_NO_MOUSE") )
+		g_bNoMouse = true;
 
 	if ( getenv("TERM") )
 	{
@@ -406,7 +413,7 @@ void OptionProc(int	argc, char * const	argv[])
 	string	sLogFile = "/dev/null";
 	cout << "LinM "<< VERSION << ", user-friendly graphic shell, 2007" <<  endl << endl;
 
-	while((opt = getopt_long(argc, argv, "hnmldcsk:", longopts, NULL)) != -1)
+	while((opt = getopt_long(argc, argv, "hnmldcsk:M", longopts, NULL)) != -1)
 	{
 		switch(opt)
 		{
@@ -433,6 +440,10 @@ void OptionProc(int	argc, char * const	argv[])
 
 		case 'm':		// mcd
 			_bMcdExe = true;
+			break;
+
+		case 'M':		// nomouse
+			g_bNoMouse = true;
 			break;
 
 		case 'c':       // configure file
@@ -481,25 +492,53 @@ void OptionProc(int	argc, char * const	argv[])
 	}
 }
 
-void	CopyConfFiles()
+void	CopyConfFiles(char *argv[])
 {
-    if (g_tCfg.getVersion() != VERSION)
+    bool bNeedMerge = (g_tCfg.getVersion()          != VERSION) ||
+                      (g_tKeyCfg.getVersion()        != VERSION) ||
+                      (g_tColorCfg.getVersion()      != VERSION) ||
+                      (g_tSyntaxExtCfg.getVersion()  != VERSION);
+
+    if (bNeedMerge)
     {
-        bool bYN = YNBox(_("Error"), 
-						_("configuration files are not compatible. configuration files copy ?"), 
-						true);
+        string sysPath = string(__LINM_CFGPATH__);
 
-        if (bYN == true)
-        {
-            system(	"mkdir ~/.linm/back 2> /dev/null > /dev/null; "
-					"cp ~/linm/* ~/.linm/back 2> /dev/null > /dev/null; "
-					"cp " __LINM_CFGPATH__ "/* ~/.linm 2> /dev/null > /dev/null");
+        // Backup existing user config files before any changes
+        system("mkdir -p ~/.config/linm/back/ 2>/dev/null >/dev/null; "
+               "cp ~/.config/linm/*.cfg ~/.config/linm/back/ 2>/dev/null >/dev/null");
 
-            g_tCfg.Load((g_tCfg.GetValue("Static", "CfgHome") + "default.cfg").c_str());
-            g_tColorCfg.Load((g_tCfg.GetValue("Static", "CfgHome") + "colorset.cfg").c_str());
-            g_tKeyCfg.Load((g_tCfg.GetValue("Static", "CfgHome") + "keyset.cfg").c_str());
-            g_tKeyCfg.Load((g_tCfg.GetValue("Static", "CfgHome") + "syntexset.cfg").c_str());
+        // Merge keys present in the system defaults but absent in the user's configs.
+        // Each config file is merged independently; existing user settings are never overwritten.
+        if (g_tCfg.getVersion() != VERSION) {
+            g_tCfg.MergeFromFile(sysPath + "/default.cfg");
+            g_tCfg.setVersion(VERSION);
+            g_tCfg.Save();
         }
+
+        if (g_tKeyCfg.getVersion() != VERSION) {
+            g_tKeyCfg.MergeFromFile(sysPath + "/keyset.cfg");
+            g_tKeyCfg.setVersion(VERSION);
+            g_tKeyCfg.Save();
+        }
+
+        if (g_tColorCfg.getVersion() != VERSION) {
+            g_tColorCfg.MergeFromFile(sysPath + "/colorset.cfg");
+            g_tColorCfg.setVersion(VERSION);
+            g_tColorCfg.Save();
+        }
+
+        if (g_tSyntaxExtCfg.getVersion() != VERSION) {
+            g_tSyntaxExtCfg.MergeFromFile(sysPath + "/syntexset.cfg");
+            g_tSyntaxExtCfg.setVersion(VERSION);
+            g_tSyntaxExtCfg.Save();
+        }
+
+        MsgBox(_("Info"), _("Configuration updated to version " VERSION ". Restarting..."));
+
+        // Restart the process so that all merged settings take effect cleanly.
+        CursesDestroy();
+        execvp(argv[0], argv);
+        // execvp only returns on failure; fall through to continue with partially-applied config.
     }
 }
 
@@ -510,13 +549,17 @@ int main(int argc, char *argv[])
 	if (Initialize() == false) return SUCCESS;
 	if (Load_KeyFile() == false) return SUCCESS;
 
+	// Config file value applied only if not already disabled by CLI/env
+	if (!g_bNoMouse)
+		g_bNoMouse = !g_tCfg.GetBool("Default", "Mouse", true);
+
 	Signal_Blocking();
 
 	// terminal title change.
 	printf("%c]0;LinM %s%c", '\033', VERSION, '\007');
 
 	CursesInit( g_tCfg.GetBool("Default", "Transparency", false ) );
-	MouseInit();
+	if (!g_bNoMouse) MouseInit();
 
 	if ( g_SubShell.CheckSid() == ERROR )
 	{
@@ -527,7 +570,7 @@ int main(int argc, char *argv[])
 
 	try
 	{
-		CopyConfFiles();
+		CopyConfFiles(argv);
 				
 		g_tMainFrame.SetTitleChange( _bTitleChange );
 

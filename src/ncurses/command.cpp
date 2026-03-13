@@ -101,6 +101,7 @@ void	Command::Init()
 
 	_mapPanelFunc[new TypeInfo( PANEL, "SortChange")] 	= &CmdPanelImp::SortChange;
 	_mapPanelFunc[new TypeInfo( PANEL, "SortAscDescend")] = &CmdPanelImp::SortAscDescend;
+	_mapPanelFunc[new TypeInfo( PANEL, "FilterMode")]	= &CmdPanelImp::FilterMode;
 	_mapPanelFunc[new TypeInfo( PANEL, "ColumnAuto")]	= &CmdPanelImp::ColumnAuto;
 	_mapPanelFunc[new TypeInfo( PANEL, "Column1")]		= &CmdPanelImp::Column1;
 	_mapPanelFunc[new TypeInfo( PANEL, "Column2")]		= &CmdPanelImp::Column2;

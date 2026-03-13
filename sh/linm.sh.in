@@ -1,6 +1,6 @@
 # install configuration files if not exist
 
-MLS_PWD_FILE="${HOME}/.linm/path"
+MLS_PWD_FILE="${HOME}/.config/linm/path"
 
 @bindir@/linm $@
 

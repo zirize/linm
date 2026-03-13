@@ -67,6 +67,41 @@ namespace MLSUTIL {
         return true;
     }
 
+    void Configure::MergeFromFile(const string &sFilename) {
+        if (sFilename.empty()) return;
+
+        ifstream in(sFilename.c_str());
+        if (!in) return;
+
+        string line, var, val, section, name;
+
+        while (!getline(in, line).eof()) {
+            if (line.empty()) continue;
+            if (Tolower(line.substr(0, 10)) == "#!version ") continue;
+            if (line[0] == '#') continue;
+            if (line[0] == '[') {
+                section = getbetween(line, '[', ']');
+                continue;
+            }
+
+            string::size_type p = line.find('=');
+            if (p == string::npos) continue;
+
+            var = chop(line.substr(0, p));
+            val = chop(line.substr(p + 1));
+            if (var.empty() || var == "version") continue;
+
+            if (section != "")
+                name = Tolower(section) + "." + Tolower(var);
+            else
+                name = Tolower(var);
+
+            // Only insert if the key does not yet exist in this config
+            if (_EnvMap.find(name) == _EnvMap.end())
+                _EnvMap.insert(MapType::value_type(name, Entry(var, val, section, true)));
+        }
+    }
+
     bool Configure::Save(const string &sFilename) {// save the current file.
         string bakfile = _sFilename, srcfile;
 
@@ -95,6 +130,9 @@ namespace MLSUTIL {
 
         SaveParcing();
 
+        if (_sVersion.size() != 0)
+            out << "#!version " << _sVersion << endl;
+
         // Modified
         MapType::iterator i = _EnvMap.begin(), end = _EnvMap.end(), j;
         MapType mod_list, dup_list;
@@ -108,6 +146,8 @@ namespace MLSUTIL {
 
         if (in) {
             while (!getline(in, line).eof()) {
+                if (Tolower(line.substr(0, 10)) == "#!version ") continue;
+
                 if (line.empty() || line[0] == '#' || line[0] == '$') {
                     out << line << endl;
                     continue;

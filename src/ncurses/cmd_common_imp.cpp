@@ -52,73 +52,121 @@ void	CmdCommonImp::Help()
     vMsgData.push_back("");
 
 	vMsgData.push_back( _("File Panel Key List") );
+	vMsgData.push_back( "" );
 
-	map<TypeInfo*, string>::iterator i;
+	vector<pair<TypeInfo*, string>>::iterator i;
 
 	for (i = g_tKeyCfg._mapKeyHelp.begin(); i != g_tKeyCfg._mapKeyHelp.end(); ++i)
 	{
-		if ( i->first->eType == PANEL || i->first->eType == COMMON )
+		if ( i->first->eType != PANEL )
+			continue;
+
+		// Group_ prefix: display as section header
+		if ( i->first->sValue.size() > 6 && i->first->sValue.substr(0, 6) == "Group_" )
 		{
-			string sKeyName = g_tKeyCfg.CmdToKeyName( i->first->sValue, i->first->eType );
+			vMsgData.push_back( "" );
+			sMsg.Printf("  [ %s ]", i->second.c_str());
+			vMsgData.push_back(sMsg.c_str());
+			continue;
+		}
 
-			if (sKeyName.size() > 1 )
-				if ( sKeyName[0] == 'F' && (sKeyName[1] > '0' && sKeyName[1] <= '9'))
-					continue;
+		string sKeyName = g_tKeyCfg.CmdToKeyName( i->first->sValue, i->first->eType );
 
-			if ( !sKeyName.empty() && sKeyName != i->second)
-			{
-				sView = g_tKeyCfg.GetHelp( i->first->sValue, i->first->eType );
-				LOG("Key List :: [%s]", sView.c_str());
-				
-				sMsg.Printf("    %-10s : %s", sKeyName.c_str(), _(sView.c_str()));
-				vMsgData.push_back(sMsg.c_str());
-			}
+		if (sKeyName.size() > 1 )
+			if ( sKeyName[0] == 'F' && (sKeyName[1] > '0' && sKeyName[1] <= '9'))
+				continue;
+
+		if ( !sKeyName.empty() && sKeyName != i->second)
+		{
+			sView = i->second;
+			sMsg.Printf("    %-10s : %s", sKeyName.c_str(), _(sView.c_str()));
+			vMsgData.push_back(sMsg.c_str());
+		}
+	}
+
+	// Common commands (shared across all views)
+	vMsgData.push_back( "" );
+	vMsgData.push_back( _("Common Keys") );
+	vMsgData.push_back( "" );
+
+	for (i = g_tKeyCfg._mapKeyHelp.begin(); i != g_tKeyCfg._mapKeyHelp.end(); ++i)
+	{
+		if ( i->first->eType != COMMON )
+			continue;
+
+		string sKeyName = g_tKeyCfg.CmdToKeyName( i->first->sValue, i->first->eType );
+
+		if (sKeyName.size() > 1 )
+			if ( sKeyName[0] == 'F' && (sKeyName[1] > '0' && sKeyName[1] <= '9'))
+				continue;
+
+		if ( !sKeyName.empty() && sKeyName != i->second)
+		{
+			sView = i->second;
+			sMsg.Printf("    %-10s : %s", sKeyName.c_str(), _(sView.c_str()));
+			vMsgData.push_back(sMsg.c_str());
 		}
 	}
 
 	vMsgData.push_back("");
 	vMsgData.push_back( _("LinM Change Directory Key List") );
+	vMsgData.push_back( "" );
 
 	for (i = g_tKeyCfg._mapKeyHelp.begin(); i != g_tKeyCfg._mapKeyHelp.end(); ++i)
 	{
-		if ( i->first->eType == MCD || i->first->eType == COMMON )
+		if ( i->first->eType != MCD )
+			continue;
+
+		if ( i->first->sValue.size() > 6 && i->first->sValue.substr(0, 6) == "Group_" )
 		{
-			string sKeyName = g_tKeyCfg.CmdToKeyName( i->first->sValue, i->first->eType );
+			vMsgData.push_back( "" );
+			sMsg.Printf("  [ %s ]", i->second.c_str());
+			vMsgData.push_back(sMsg.c_str());
+			continue;
+		}
 
-			if (sKeyName.size() > 1 )
-				if ( sKeyName[0] == 'F' && (sKeyName[1] > '0' && sKeyName[1] <= '9'))
-					continue;
+		string sKeyName = g_tKeyCfg.CmdToKeyName( i->first->sValue, i->first->eType );
 
-			if ( !sKeyName.empty() && sKeyName != i->second)
-			{
-				sView = g_tKeyCfg.GetHelp( i->first->sValue, i->first->eType );	
+		if (sKeyName.size() > 1 )
+			if ( sKeyName[0] == 'F' && (sKeyName[1] > '0' && sKeyName[1] <= '9'))
+				continue;
 
-				sMsg.Printf("    %-10s : %s", sKeyName.c_str(), _(sView.c_str()));
-				vMsgData.push_back(sMsg.c_str());
-			}
+		if ( !sKeyName.empty() && sKeyName != i->second)
+		{
+			sView = i->second;
+			sMsg.Printf("    %-10s : %s", sKeyName.c_str(), _(sView.c_str()));
+			vMsgData.push_back(sMsg.c_str());
 		}
 	}
 
 	vMsgData.push_back("");
 	vMsgData.push_back( _("Simple Editor Key List") );
+	vMsgData.push_back( "" );
 
 	for (i = g_tKeyCfg._mapKeyHelp.begin(); i != g_tKeyCfg._mapKeyHelp.end(); ++i)
 	{
-		if ( i->first->eType == EDITOR || i->first->eType == COMMON )
+		if ( i->first->eType != EDITOR )
+			continue;
+
+		if ( i->first->sValue.size() > 6 && i->first->sValue.substr(0, 6) == "Group_" )
 		{
-			string sKeyName = g_tKeyCfg.CmdToKeyName( i->first->sValue, i->first->eType );
+			vMsgData.push_back( "" );
+			sMsg.Printf("  [ %s ]", i->second.c_str());
+			vMsgData.push_back(sMsg.c_str());
+			continue;
+		}
 
-			if (sKeyName.size() > 1 )
-				if ( sKeyName[0] == 'F' && (sKeyName[1] > '0' && sKeyName[1] <= '9'))
-					continue;
+		string sKeyName = g_tKeyCfg.CmdToKeyName( i->first->sValue, i->first->eType );
 
-			if ( !sKeyName.empty() && sKeyName != i->second)
-			{
-				sView = g_tKeyCfg.GetHelp( i->first->sValue, i->first->eType );
+		if (sKeyName.size() > 1 )
+			if ( sKeyName[0] == 'F' && (sKeyName[1] > '0' && sKeyName[1] <= '9'))
+				continue;
 
-				sMsg.Printf("    %-10s : %s", sKeyName.c_str(), _(sView.c_str()));
-				vMsgData.push_back(sMsg.c_str());
-			}
+		if ( !sKeyName.empty() && sKeyName != i->second)
+		{
+			sView = i->second;
+			sMsg.Printf("    %-10s : %s", sKeyName.c_str(), _(sView.c_str()));
+			vMsgData.push_back(sMsg.c_str());
 		}
 	}
 
