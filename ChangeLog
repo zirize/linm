@@ -1,3 +1,13 @@
+2026-03-20 Bill,Kang <zirize@gmail.com>
+	- 이동식 드라이브 등 마지막 접속 경로(LastPath)가 더 이상 존재하지 않을 경우
+	  오류 없이 홈 디렉토리로 자동 fallback하여 시작하도록 개선.
+	- 현재 작업 디렉토리(cwd)가 삭제된 상태에서 실행 시에도 안전하게 시작.
+	- LastPath fallback 성공 시 설정 파일에 유효한 경로를 자동 저장.
+	- DirReader::GetCurrentPath()에서 getpwuid() 반환값이 NULL일 때 발생하는
+	  NULL 포인터 역참조(segfault) 수정.
+	- Panel::Init()에서 _bFilterRegexValid 초기화 누락 수정 (undefined behavior 방지).
+	- 0.9.5 로 버전 올림.
+
 2026-03-15 Bill,Kang <zirize@gmail.com>
 	- 보안 업데이트: sprintf → snprintf (mainframe.cpp, SMBReader.cpp),
 	  strcpy → memcpy (mlslocale.cpp), system() 호출 경로 인수 shell 인용부호 처리.
