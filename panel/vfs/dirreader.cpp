@@ -77,8 +77,11 @@ string	GetCurrentPath(void)
 	else
 	{
 		// 현재 디렉토리 읽기 오류면 home 디렉토리 지정
-		struct passwd *pw = getpwuid(getuid()); // getuid이냐 geteuid냐...;
-		sPath = sPath + pw->pw_dir + '/';
+		struct passwd *pw = getpwuid(getuid());
+		if (pw && pw->pw_dir)
+			sPath = string(pw->pw_dir) + '/';
+		else
+			sPath = "/";
 	}
 	return sPath;
 }

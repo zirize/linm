@@ -212,7 +212,7 @@ public:
 
 	virtual void	ReadEnd() {}
 
-	bool	Read(const string& sPath);
+	bool	Read(const string& sPath, bool bShowError = true);
 	
 	void	Key_Left();
 	void	Key_Right();

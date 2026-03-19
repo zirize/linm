@@ -74,24 +74,31 @@ bool Initialize()
 	
 	string	sCwd;
 	char*	cwd = getcwd(NULL, 0);
-	if (cwd == NULL)
+	if (cwd != NULL && access(cwd, R_OK | X_OK) != -1)
 	{
-		String sMsg;
-		sMsg.AppendBlank(60, "%s", strerror(errno));
-		cout << sMsg.c_str();
-		cout << errMsg << endl;
-		return false;
+		sCwd = cwd;
+		free(cwd);
 	}
-	if (access(cwd, R_OK | X_OK) == -1)
+	else
 	{
-		String sMsg;
-		sMsg.AppendBlank(60, "%s", strerror(errno));
-		cout << sMsg.c_str();
-		cout << errMsg << endl;
-		return false;
+		if (cwd)
+			free(cwd);
+
+		struct passwd *pw = getpwuid(getuid());
+		if (pw && pw->pw_dir && access(pw->pw_dir, R_OK | X_OK) != -1)
+			sCwd = pw->pw_dir;
+		else
+			sCwd = "/";
+
+		if (chdir(sCwd.c_str()) == -1)
+		{
+			String sMsg;
+			sMsg.AppendBlank(60, "%s", strerror(errno));
+			cout << sMsg.c_str();
+			cout << errMsg << endl;
+			return false;
+		}
 	}
-	sCwd = cwd;
-	free(cwd);
 
 	Set_Locale(_nLangSet); 	// Locale setting.
 	

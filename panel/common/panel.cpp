@@ -47,6 +47,7 @@ void	Panel::Init()
 	_bFilterMode = false;
 	_sFilterStr.clear();
 	_vFilterFiles.clear();
+	_bFilterRegexValid = true;
 
 	_tMemFile.Clear();	
 	_vDirFiles.clear();
@@ -206,7 +207,7 @@ Reader*	Panel::GetReader(const string& sPathOrType)
 	return pReader;
 }
 
-bool	Panel::Read(const string& sPathConst)
+bool	Panel::Read(const string& sPathConst, bool bShowError)
 {
 	Reader*		pReader = NULL;
 	string		sPrevDir;
@@ -230,15 +231,17 @@ bool	Panel::Read(const string& sPathConst)
 			return false;
 		}
 
-		pReader->SetErrMsgShow(true);
+		pReader->SetErrMsgShow(bShowError);
 		string sPath2 = sPath.substr(idx+2);
 		if (!pReader->Read(sPath2))
 		{
 			if (pReader->GetConnected() == false)
 			{
-				MsgBox(_("Error"), _("remote disconnected."));
+				if (bShowError)
+					MsgBox(_("Error"), _("remote disconnected."));
 
 				pReader = GetReader();
+				pReader->SetErrMsgShow(bShowError);
 				if (pReader->Read("~") == false) return false;
 			}
 			else
@@ -254,14 +257,16 @@ bool	Panel::Read(const string& sPathConst)
 			return false;
 		}
 		
-		pReader->SetErrMsgShow(true);
+		pReader->SetErrMsgShow(bShowError);
 		if (!pReader->Read(sPath)) 
 		{
 			if (pReader->GetConnected() == false)
 			{
-				MsgBox(_("Error"), _("remote disconnected."));
+				if (bShowError)
+					MsgBox(_("Error"), _("remote disconnected."));
 
 				pReader = GetReader();
+				pReader->SetErrMsgShow(bShowError);
 				if (pReader->Read("~") == false) return false;
 			}
 			else

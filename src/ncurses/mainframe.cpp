@@ -24,6 +24,21 @@
 using namespace MLSUTIL;
 using namespace MLS;
 
+namespace {
+bool ReadStartupPath(Panel& panel, const string* paths, size_t count, string* resolvedPath = NULL) {
+    for (size_t i = 0; i < count; ++i) {
+        if (paths[i].empty())
+            continue;
+        if (panel.Read(paths[i], false)) {
+            if (resolvedPath)
+                *resolvedPath = panel.GetPath();
+            return true;
+        }
+    }
+    return false;
+}
+}
+
 inline void SetPosition(Position *pPosition, Form *pForm, int y, int x, int height, int width) {
     pPosition->SetForm(pForm);
     pPosition->y = y;
@@ -114,13 +129,19 @@ void MainFrame::SaveConfig() {
 }
 
 void MainFrame::Init() {
-    if (!_tPanel[0].Read("."))
-        if (!_tPanel[0].Read("~"))
-            exit(1);
-    if (!_tPanel[1].Read(_sLastPath))
-        if (!_tPanel[1].Read("~"))
-            if (!_tPanel[1].Read("."))
-                exit(1);
+    string sPanel0Paths[] = {".", "~", "/"};
+    string sPanel1Paths[] = {_sLastPath, "~", ".", "/"};
+    string sResolvedLastPath;
+
+    if (!ReadStartupPath(_tPanel[0], sPanel0Paths, 3))
+        exit(1);
+    if (!ReadStartupPath(_tPanel[1], sPanel1Paths, 4, &sResolvedLastPath))
+        exit(1);
+    if (!sResolvedLastPath.empty() && sResolvedLastPath != _sLastPath) {
+        _sLastPath = sResolvedLastPath;
+        _Config.SetValue("User", "LastPath", _sLastPath, true);
+        _Config.Save();
+    }
 
     _tMcd[0]._bFocus = _tPanel[0]._bFocus = _nActive ? false : true;
     _tMcd[1]._bFocus = _tPanel[1]._bFocus = _nActive ? true : false;
@@ -805,4 +826,3 @@ void MainFrame::SyncDirectory() {
     }
     return;
 }
-
