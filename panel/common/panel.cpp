@@ -241,6 +241,7 @@ bool	Panel::Read(const string& sPathConst, bool bShowError)
 					MsgBox(_("Error"), _("remote disconnected."));
 
 				pReader = GetReader();
+				if (pReader == NULL) return false;
 				pReader->SetErrMsgShow(bShowError);
 				if (pReader->Read("~") == false) return false;
 			}
@@ -266,6 +267,7 @@ bool	Panel::Read(const string& sPathConst, bool bShowError)
 					MsgBox(_("Error"), _("remote disconnected."));
 
 				pReader = GetReader();
+				if (pReader == NULL) return false;
 				pReader->SetErrMsgShow(bShowError);
 				if (pReader->Read("~") == false) return false;
 			}

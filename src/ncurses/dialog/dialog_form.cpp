@@ -133,13 +133,16 @@ void	Form::Show()
 	{
 		LOG("new win");
 	
-		_pWin = newwin(y, x, height, width);
+		_pWin = newwin(height, width, y, x);
 
 		if (_pWin == NULL)
 			_pWin = newwin(0, 0, 0, 0);
 		
 		if (_pWin == NULL)
 			LOG("_pWin is NULL !!!!");
+
+		if (_pWin != NULL)
+			keypad(_pWin, TRUE);
 
 		LOG("new win end");
 	}
@@ -186,7 +189,7 @@ void	Form::Do()
 	{
 		Show();
 
-		tKeyInfo = tKeyReader.Read();
+		tKeyInfo = tKeyReader.Read(_pWin);
 
 		switch((int)tKeyInfo)
 		{
